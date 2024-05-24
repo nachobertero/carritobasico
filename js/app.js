@@ -19,6 +19,8 @@ function loadEventListeners() {
 
      document.addEventListener('DOMContentLoaded', () => {
          cartItems = JSON.parse(localStorage.getItem('cart')) || []; 
+         
+         showCartItems();
      } );
 
      // Al Vaciar el carrito
