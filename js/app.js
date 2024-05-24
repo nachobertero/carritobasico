@@ -16,12 +16,10 @@ function loadEventListeners() {
      cart.addEventListener('click', removeCourse);
 
      // Cargar LocalStorage
-
      document.addEventListener('DOMContentLoaded', () => {
          cartItems = JSON.parse(localStorage.getItem('cart')) || []; 
-         
          showCartItems();
-     } );
+     });
 
      // Al Vaciar el carrito
      emptyCartBtn.addEventListener('click', emptyCart);
@@ -50,18 +48,16 @@ function readCourseData(course) {
      }
 
      // Verifica si el curso ya está en el carrito
-     if( cartItems.some( course => course.id === courseInfo.id ) ) { 
+     if(cartItems.some(course => course.id === courseInfo.id)) { 
           // Si existe, aumenta la cantidad
-          const courses = cartItems.map( course => {
-               if( course.id === courseInfo.id ) {
+          const courses = cartItems.map(course => {
+               if(course.id === courseInfo.id) {
                     course.quantity++;
-                     return course;
-                } else {
-                     return course;
-             }
-          })
+               }
+               return course;
+          });
           cartItems = [...courses];
-     }  else {
+     } else {
           // Si no existe, agrega el curso al carrito
           cartItems = [...cartItems, courseInfo];
      }
@@ -73,12 +69,12 @@ function readCourseData(course) {
 // Elimina el curso del carrito en el DOM
 function removeCourse(e) {
      e.preventDefault();
-     if(e.target.classList.contains('borrar-curso') ) {
+     if(e.target.classList.contains('borrar-curso')) {
           // Obtiene el ID del curso a eliminar
-          const courseId = e.target.getAttribute('data-id')
+          const courseId = e.target.getAttribute('data-id');
           // Filtra el carrito para eliminar el curso
           cartItems = cartItems.filter(course => course.id !== courseId);
-          // Actualiza el carrito en el HTML
+          // Muestra los cursos actualizados en el carrito
           showCartItems();
      }
 }
@@ -86,7 +82,7 @@ function removeCourse(e) {
 // Muestra los cursos seleccionados en el carrito
 function showCartItems() {
      // Vacía el carrito antes de mostrar los cursos
-     emptyCart();
+     clearCart();
 
      // Agrega cada curso al carrito en el HTML
      cartItems.forEach(course => {
@@ -97,7 +93,7 @@ function showCartItems() {
                </td>
                <td>${course.title}</td>
                <td>${course.price}</td>
-               <td>${course.quantity} </td>
+               <td>${course.quantity}</td>
                <td>
                     <a href="#" class="borrar-curso" data-id="${course.id}">X</a>
                </td>
@@ -106,20 +102,25 @@ function showCartItems() {
      });
 
      // LocalStorage
-
-     addLocalStorage();
+     updateLocalStorage();
 }
 
-function addLocalStorage() {
-
+// Actualiza el localStorage con el contenido del carrito
+function updateLocalStorage() {
      localStorage.setItem('cart', JSON.stringify(cartItems));
 }
 
-// Elimina todos los cursos del carrito en el DOM
-function emptyCart() {
+// Elimina todos los cursos del carrito en el DOM y del array
+function clearCart() {
      // Elimina todos los elementos hijos del contenedor del carrito
      while(cartContainer.firstChild) {
           cartContainer.removeChild(cartContainer.firstChild);
+     }
+}
 
-      }
+// Vacía el carrito completamente
+function emptyCart() {
+     cartItems = []; // Reinicia el array de cursos
+     clearCart(); // Limpia el HTML
+     updateLocalStorage(); // Actualiza el localStorage
 }
